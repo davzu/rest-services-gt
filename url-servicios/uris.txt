@@ -1,0 +1,12 @@
+jersey
+http://localhost:8085/WSJerseyREST/rest/tallerService/v1/listar/jsf
+http://localhost:8085/WSJerseyREST/rest/tallerService/v1/insertar
+http://localhost:8085/WSJerseyREST/rest/tallerService/v1/actualizar
+http://localhost:8085/WSJerseyREST/rest/tallerService/v1/eliminar
+
+spring
+http://localhost:8085/WSSpringREST/tallerService/v1/listar/angular
+http://localhost:8085/WSSpringREST/tallerService/v1/listarParam?nombre=angular
+http://localhost:8085/WSSpringREST/tallerService/v1/insertar
+http://localhost:8085/WSSpringREST/tallerService/v1/actualizar
+http://localhost:8085/WSSpringREST/tallerService/v1/eliminar
