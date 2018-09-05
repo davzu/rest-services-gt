@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<h:head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+		<meta charset="utf-8"/>
+		<title>REST</title>
+    	<link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500|Ubuntu+Condensed' rel='stylesheet' type='text/css'/>
+	</h:head>
+	<h:body>
+	
+<div align="left"><a href="/" ><img src="resources/galaxy-training-logo.png"/></a></div>	
+<p:outputLabel> Servicios REST</p:outputLabel>
+<h:form style="width:80%">	
+<p align="center">
+<p:dataTable var="post" 
+			value="#{postMB.posts}"
+			rows="10"
+            paginator="true"
+            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+            rowsPerPageTemplate="5,10,15">
+	
+	<p:column style="width:90px">
+		<f:facet name="header">
+			<h:outputText value="User Id"></h:outputText>
+		</f:facet>
+		<h:outputText value="#{post.userId}"></h:outputText>
+	</p:column>
+	
+	<p:column style="width:90px">
+		<f:facet name="header" >
+			<h:outputText value="Id"></h:outputText>
+		</f:facet>
+		<h:outputText value="#{post.id}"></h:outputText>
+	</p:column>
+	
+	<p:column>
+		<f:facet name="header">
+			<h:outputText value="title"></h:outputText>
+		</f:facet>
+		<h:outputText value="#{post.title}"></h:outputText>
+	</p:column>
+	
+	 <f:facet name="paginatorTopLeft">
+            <p:commandButton type="button" icon="fa fa-sync" />
+        </f:facet>
+ 
+        <f:facet name="paginatorBottomRight">
+            <p:commandButton type="button" icon="fa fa-cloud-upload" />
+        </f:facet>	
+</p:dataTable>
+</p>
+</h:form>
+	</h:body>
+</html>
