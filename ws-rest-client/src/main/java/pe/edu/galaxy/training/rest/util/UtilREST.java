@@ -6,7 +6,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import sun.misc.BASE64Encoder;
+//import sun.misc.BASE64Encoder;
+import javax.xml.bind.DatatypeConverter;
+//import java.util.Base64;
 
 public class UtilREST {
 
@@ -35,7 +37,10 @@ public class UtilREST {
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			
 			String aut=user+":"+psw;
-			String autEnc = new BASE64Encoder().encode(aut.getBytes());
+//                        String autEnc = new BASE64Encoder().encode(aut.getBytes());
+			String autEnc = DatatypeConverter.printBase64Binary(aut.getBytes());
+                        // java 8
+//                        String encryptedValue = new String(Base64.getEncoder().encode(aut.getBytes()));
 			System.out.println(aut);
 			
 			connection.setRequestProperty("Authorization", "Basic "+autEnc);

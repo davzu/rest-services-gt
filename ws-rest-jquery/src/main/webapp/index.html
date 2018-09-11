@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>REST Service</title>
+
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+<script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+
+<link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+<link href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+	<div align="left"><a href="/" ><img src="resources/galaxy-training-logo.png"/></a></div>
+<div style="width:800px">
+	<table id="country" class="display nowrap" style="width:100%" align="center">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Alpha2_code</th>
+				<th>Alpha3_code</th>
+			</tr>
+		</thead>
+		<tbody id="idtbody">
+		</tbody>
+	</table>
+</div>
+</body>
+
+<script>
+$(document).ready(function() {
+	
+	    $.ajax({
+	        url: "http://services.groupkt.com/country/get/all"
+	    }).then(function(data) {
+		    json=data.RestResponse.result;
+		   //console.log(json);
+		   $.each(json, function (index, item) {
+			   //console.log(item);
+			     var row = "<tr>"
+			                 + "<td>" + item.name + "</td>"
+			                 + "<td align='center'>" + item.alpha2_code + "</td>"
+			                 + "<td align='center'>" + item.alpha3_code + "</td>"
+			                 + "</tr>";
+			     $('#idtbody').append(row);
+			});
+
+		   $('#country').DataTable( {
+		        responsive: true
+		    } );
+		    
+	    });
+	}
+);
+	
+</script>
+</html>
