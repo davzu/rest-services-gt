@@ -25,8 +25,7 @@ public class TallerRepositoryImpl implements TallerRepository {
 	public boolean insert(Taller taller) throws RepositoryException {
 		boolean sw = false;
 		try {
-			StoredProcedureQuery spq = em
-					.createNamedStoredProcedureQuery("taller.insert");
+			StoredProcedureQuery spq = em.createNamedStoredProcedureQuery("taller.insert");
 
 			spq.setParameter("P_NOMBRE", taller.getNombre());
 			spq.setParameter("P_DESCRIPCION", taller.getDescripcion());
@@ -48,8 +47,7 @@ public class TallerRepositoryImpl implements TallerRepository {
 	public boolean update(Taller taller) throws RepositoryException {
 		boolean sw = false;
 		try {
-			StoredProcedureQuery spq = em
-					.createNamedStoredProcedureQuery("taller.update");
+			StoredProcedureQuery spq = em.createNamedStoredProcedureQuery("taller.update");
 			spq.setParameter("P_ID_TALLER", taller.getId());
 			spq.setParameter("P_NOMBRE", taller.getNombre());
 			spq.setParameter("P_DESCRIPCION", taller.getDescripcion());
@@ -66,8 +64,7 @@ public class TallerRepositoryImpl implements TallerRepository {
 	public boolean delete(Taller taller) throws RepositoryException {
 		boolean sw = false;
 		try {
-			StoredProcedureQuery spq = em
-					.createNamedStoredProcedureQuery("taller.delete");
+			StoredProcedureQuery spq = em.createNamedStoredProcedureQuery("taller.delete");
 			spq.setParameter("P_ID_TALLER", taller.getId());
 			spq.execute();
 			sw = true;
@@ -90,8 +87,7 @@ public class TallerRepositoryImpl implements TallerRepository {
 
 		List<Taller> lstTaller = null;
 		try {
-			StoredProcedureQuery spq = em
-					.createNamedStoredProcedureQuery("taller.listar");
+			StoredProcedureQuery spq = em.createNamedStoredProcedureQuery("taller.listar");
 			spq.setParameter("P_NOMBRE", taller.getNombre());
 
 			if (spq.execute()) {

@@ -40,7 +40,7 @@
 	<!-- Welcome page -->
 	
 	<welcome-file-list>
-		<welcome-file>faces/index.xhtml</welcome-file>
+		<welcome-file>faces/insertar-cliente.xhtml</welcome-file>
 	</welcome-file-list>
 	
 </web-app>

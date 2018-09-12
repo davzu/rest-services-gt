@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<meta charset="utf-8" />
+	<title>REST</title>
+	<link
+		href='https://fonts.googleapis.com/css?family=Roboto:400,300,500|Ubuntu+Condensed'
+		rel='stylesheet' type='text/css' />
+</h:head>
+<h:body>
+
+	<div align="left">
+		<a href="/"><img src="resources/galaxy-training-logo.png" /></a>
+	</div>
+	<p:outputLabel>Mantenimiento Cliente</p:outputLabel>
+	<h:form style="width:80%">
+
+		<p:panelGrid columns="2">
+			<p:outputLabel value="Razón Social" />
+			<p:inputText value="#{clienteMB.cliente.razonSocial}" />
+			<p:outputLabel value="RUC" />
+			<p:inputText value="#{clienteMB.cliente.ruc}" />
+			<p:outputLabel value="Dirección" />
+			<p:inputText value="#{clienteMB.cliente.direccion}" />
+			<p:outputLabel value="" />
+			<p:commandButton value="Insertar" id="ajax"
+				actionListener="#{clienteMB.insertar()}"
+				styleClass="ui-priority-primary" />
+		</p:panelGrid>
+	</h:form>
+</h:body>
+</html>

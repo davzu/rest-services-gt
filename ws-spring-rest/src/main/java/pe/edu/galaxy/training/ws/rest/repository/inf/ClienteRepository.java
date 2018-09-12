@@ -11,5 +11,8 @@ public interface ClienteRepository extends GenericRepository<Cliente> {
 	
 	public List<Cliente>  findByLikeRZ(String rz) throws RepositoryException;
 	
+	public boolean validarRazonSocial(Cliente cliente)  throws RepositoryException;
+	
+	public boolean validarRuc(Cliente cliente) throws RepositoryException;
 	
 }

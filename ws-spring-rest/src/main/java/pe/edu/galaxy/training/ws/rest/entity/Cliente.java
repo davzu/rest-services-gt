@@ -7,22 +7,24 @@ import javax.persistence.*;
 @NamedStoredProcedureQueries(
 		{
 				@NamedStoredProcedureQuery(
-					name="cliente.findByLikeObject", 
+					name="cliente.listar", 
 					procedureName="PKG_CLIENTE.SP_LISTAR",
 					resultClasses= Cliente.class,
 					parameters={
 								@StoredProcedureParameter(mode=ParameterMode.REF_CURSOR,name="P_C_CURSOR", type=void.class )
 						}					
 				),
-//				@NamedStoredProcedureQuery(
-//						name="cliente.findByLikeRZ", 
-//						procedureName="PKG_CLIENTE.SP_LISTAR_X_RZ",
-//						resultClasses= Cliente.class,
-//						parameters={
-//									@StoredProcedureParameter(mode=ParameterMode.REF_CURSOR,name="P_C_CURSOR", type=void.class ),
-//									@StoredProcedureParameter(mode=ParameterMode.IN,name="P_RAZON_SOCIAL", type=String.class )
-//							}					
-//				),
+				/*
+				@NamedStoredProcedureQuery(
+						name="cliente.findByLikeRZ", 
+						procedureName="PKG_CLIENTE.SP_LISTAR_X_RZ",
+						resultClasses= Cliente.class,
+						parameters={
+									@StoredProcedureParameter(mode=ParameterMode.REF_CURSOR,name="P_C_CURSOR", type=void.class ),
+									@StoredProcedureParameter(mode=ParameterMode.IN,name="P_RAZON_SOCIAL", type=String.class )
+							}					
+				),
+				*/
 				@NamedStoredProcedureQuery(
 						name="cliente.insert", 
 						procedureName="PKG_CLIENTE.SP_INSERTAR",
@@ -32,6 +34,43 @@ import javax.persistence.*;
 									@StoredProcedureParameter(mode=ParameterMode.IN,name="P_RUC", type=String.class ),
 									@StoredProcedureParameter(mode=ParameterMode.IN,name="P_DIRECCION", type=String.class )
 									
+							}					
+				),
+				@NamedStoredProcedureQuery(
+						name="cliente.update", 
+						procedureName="PKG_CLIENTE.SP_ACTUALIZAR",
+						parameters={
+									@StoredProcedureParameter(mode=ParameterMode.IN,name="P_ID_CLIENTE", type=Integer.class ),
+									@StoredProcedureParameter(mode=ParameterMode.IN,name="P_RAZON_SOCIAL", type=String.class ),
+									@StoredProcedureParameter(mode=ParameterMode.IN,name="P_RUC", type=String.class ),
+									@StoredProcedureParameter(mode=ParameterMode.IN,name="P_DIRECCION", type=String.class )
+									
+							}					
+				),
+				@NamedStoredProcedureQuery(
+						name="cliente.delete", 
+						procedureName="PKG_CLIENTE.SP_ELIMINAR",
+						parameters={
+									@StoredProcedureParameter(mode=ParameterMode.IN,name="P_ID_CLIENTE", type=Integer.class )
+									
+							}					
+				),
+				@NamedStoredProcedureQuery(
+						name="cliente.validar.razon.social", 
+						procedureName="PKG_CLIENTE.SP_VALIDAR_RAZON_SOCIAL",
+						parameters={
+									@StoredProcedureParameter(mode=ParameterMode.OUT,name="P_RET", type=Integer.class ),
+									@StoredProcedureParameter(mode=ParameterMode.IN,name="P_ID_CLIENTE", type=Integer.class ),
+									@StoredProcedureParameter(mode=ParameterMode.IN,name="P_RAZON_SOCIAL", type=String.class )
+							}					
+				),
+				@NamedStoredProcedureQuery(
+						name="cliente.validar.ruc",
+						procedureName="PKG_CLIENTE.SP_VALIDAR_RUC",
+						parameters={
+									@StoredProcedureParameter(mode=ParameterMode.OUT,name="P_RET", type=Integer.class ),
+									@StoredProcedureParameter(mode=ParameterMode.IN,name="P_ID_CLIENTE", type=Integer.class ),
+									@StoredProcedureParameter(mode=ParameterMode.IN,name="P_RUC", type=String.class )
 							}					
 				)
 
@@ -44,18 +83,19 @@ public class Cliente implements Serializable {
 	@Id
 	@Column(name="ID_CLIENTE")
 	private long idCliente;
+	
+	@Column(name="RAZON_SOCIAL")
+	private String razonSocial;
+	
+	@Column(name="RUC")
+	private String ruc;
 
 	@Column(name="DIRECCION")
 	private String direccion;
 
 	@Column(name="ESTADO")
 	private String estado;
-
-	@Column(name="RAZON_SOCIAL")
-	private String razonSocial;
-
-	@Column(name="RUC")
-	private String ruc;
+	
 
 	public Cliente() {
 	}

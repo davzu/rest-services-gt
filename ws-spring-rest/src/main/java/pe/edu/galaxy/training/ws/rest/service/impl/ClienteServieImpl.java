@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import pe.edu.galaxy.training.ws.rest.entity.Cliente;
 import pe.edu.galaxy.training.ws.rest.repository.exception.RepositoryException;
 import pe.edu.galaxy.training.ws.rest.repository.inf.ClienteRepository;
@@ -12,13 +11,13 @@ import pe.edu.galaxy.training.ws.rest.service.exception.ServiceException;
 import pe.edu.galaxy.training.ws.rest.service.inf.ClienteService;
 
 @Service("clienteService")
-public class ClienteServieImpl implements ClienteService{
+public class ClienteServieImpl implements ClienteService {
 
 	@Autowired
 	private ClienteRepository clienteRepository;
-	
+
 	public ClienteServieImpl() {
-		
+
 	}
 
 	@Override
@@ -32,14 +31,20 @@ public class ClienteServieImpl implements ClienteService{
 
 	@Override
 	public boolean update(Cliente cliente) throws ServiceException {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			return this.getClienteRepository().update(cliente);
+		} catch (RepositoryException e) {
+			throw new ServiceException(e);
+		}
 	}
 
 	@Override
 	public boolean delete(Cliente cliente) throws ServiceException {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			return this.getClienteRepository().delete(cliente);
+		} catch (RepositoryException e) {
+			throw new ServiceException(e);
+		}
 	}
 
 	@Override
@@ -81,5 +86,22 @@ public class ClienteServieImpl implements ClienteService{
 		}
 	}
 
-	
+	@Override
+	public boolean validarRazonSocial(Cliente cliente) throws ServiceException {
+		try {
+			return this.getClienteRepository().validarRazonSocial(cliente);
+		} catch (RepositoryException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	@Override
+	public boolean validarRuc(Cliente cliente) throws ServiceException {
+		try {
+			return this.getClienteRepository().validarRuc(cliente);
+		} catch (RepositoryException e) {
+			throw new ServiceException(e);
+		}
+	}
+
 }
