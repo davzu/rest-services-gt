@@ -1,12 +1,13 @@
 package pe.edu.galaxy.training.ws.rest.util;
 
 import org.apache.commons.codec.binary.Base64;
+import pe.edu.galaxy.training.ws.rest.entity.Usuario;
 
 public class Authorization {
 
-    public static String[] validarAutorizacion(String str) {
+    public static Usuario getUsuarioFromBasicAuth(String str) {
+        Usuario usuario = null;
         System.out.println(str);
-        String[] ret = new String[2];
         String sb = str.substring(str.lastIndexOf(" ") + 1);
         System.out.println(sb);
 
@@ -19,14 +20,16 @@ public class Authorization {
             String strClave = decode.substring(decode.indexOf(':') + 1);
             System.out.println("usuario: " + strUsuario);
             System.out.println("clave: " + strClave);
-            ret[0] = strUsuario;
-            ret[1] = strClave;
+
+            usuario = new Usuario();
+            usuario.setId(strUsuario);
+            usuario.setClave(strClave);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return ret;
+        return usuario;
     }
 
 }

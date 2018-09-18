@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,61 +14,131 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import pe.edu.galaxy.training.ws.rest.bean.ResponseEntity;
 import pe.edu.galaxy.training.ws.rest.entity.Usuario;
 import pe.edu.galaxy.training.ws.rest.entity.Vehiculo;
-import pe.edu.galaxy.training.ws.rest.service.inf.UsuarioService;
 import pe.edu.galaxy.training.ws.rest.service.inf.VehiculoService;
 import static pe.edu.galaxy.training.ws.rest.sid.CodigosHttpConstantes.*;
 import pe.edu.galaxy.training.ws.rest.sid.SidSingleton;
+import pe.edu.galaxy.training.ws.rest.util.Authorization;
 
 @RequestMapping("/vehiculoService/v1")
 @Controller
-public class VehiculoController {
+public class VehiculoController extends SeguridadRest {
 
     @Autowired
     private VehiculoService vehiculoService;
-    @Autowired
-    private UsuarioService usuarioService;
     @Autowired
     private SidSingleton sidSingleton;
 
     @RequestMapping(value = "/listarPorPlaca/{placa}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     public @ResponseBody
-    ResponseEntity listarPorPlaca(@PathVariable("placa") String placa) {
-        Usuario usuario = new Usuario();
-        usuario.setId("cgomez");
-        usuario.setClave("1234ABCD");
-        boolean usuarioValido = usuarioService.credencialesValida(usuario);
-        System.out.println("*****DZ usuarioValido ::: " + usuarioValido);
+    ResponseEntity listarPorPlaca(@RequestHeader("Authorization") String auth, @PathVariable("placa") String placa) {
+        ResponseEntity responseEntity = null;
+        Entry<String, String> entryResponse;
 
-        ResponseEntity responseEntity = new ResponseEntity();
-        Entry<String, String> entry = sidSingleton.getEntryRespuestaHttp(HTTP_COD_200);
-        responseEntity.setRespuestaHttp(entry);
+        responseEntity = validarUsuario(auth);
+        if (responseEntity != null) {
+            return responseEntity;
+        }
+        responseEntity = new ResponseEntity();
+
         responseEntity.setData(vehiculoService.listarPorPlaca(placa));
+        entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_200);
+        responseEntity.setRespuestaHttp(entryResponse);
 
         return responseEntity;
     }
 
     @RequestMapping(value = "/listarPorAno", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     public @ResponseBody
-    List<Vehiculo> listarPorAno(@RequestParam("ano") int ano) {
-        return vehiculoService.listarPorAno(ano);
+    ResponseEntity listarPorAno(@RequestHeader("Authorization") String auth, @RequestParam("ano") int ano) {
+        ResponseEntity responseEntity = null;
+        Entry<String, String> entryResponse;
+
+        responseEntity = validarUsuario(auth);
+        if (responseEntity != null) {
+            return responseEntity;
+        }
+        responseEntity = new ResponseEntity();
+
+        responseEntity.setData(vehiculoService.listarPorAno(ano));
+        entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_200);
+        responseEntity.setRespuestaHttp(entryResponse);
+
+        return responseEntity;
     }
 
     @RequestMapping(value = "/insertar", method = RequestMethod.POST, produces = "application/json; charset=utf-8", consumes = "application/json; charset=utf-8")
     public @ResponseBody
-    boolean insertar(@RequestBody Vehiculo vehiculo) {
-        return vehiculoService.insertar(vehiculo);
+    ResponseEntity insertar(@RequestHeader("Authorization") String auth, @RequestBody Vehiculo vehiculo) {
+        ResponseEntity responseEntity = null;
+        Entry<String, String> entryResponse;
+
+        responseEntity = validarUsuario(auth);
+        if (responseEntity != null) {
+            return responseEntity;
+        }
+        responseEntity = new ResponseEntity();
+
+        boolean transaccionOK = vehiculoService.insertar(vehiculo);
+
+        if (transaccionOK) {
+            entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_200);
+            responseEntity.setRespuestaHttp(entryResponse);
+        } else {
+            entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_5050);
+            responseEntity.setRespuestaHttp(entryResponse);
+        }
+
+        return responseEntity;
     }
 
     @RequestMapping(value = "/actualizar", method = RequestMethod.PUT, produces = "application/json; charset=utf-8", consumes = "application/json; charset=utf-8")
     public @ResponseBody
-    boolean actualizar(@RequestBody Vehiculo vehiculo) {
-        return vehiculoService.actualizar(vehiculo);
+    ResponseEntity actualizar(@RequestHeader("Authorization") String auth, @RequestBody Vehiculo vehiculo) {
+        ResponseEntity responseEntity = null;
+        Entry<String, String> entryResponse;
+
+        responseEntity = validarUsuario(auth);
+        if (responseEntity != null) {
+            return responseEntity;
+        }
+        responseEntity = new ResponseEntity();
+
+        boolean transaccionOK = vehiculoService.actualizar(vehiculo);
+
+        if (transaccionOK) {
+            entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_200);
+            responseEntity.setRespuestaHttp(entryResponse);
+        } else {
+            entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_5051);
+            responseEntity.setRespuestaHttp(entryResponse);
+        }
+
+        return responseEntity;
     }
 
     @RequestMapping(value = "/eliminar", method = RequestMethod.DELETE, produces = "application/json; charset=utf-8", consumes = "application/json; charset=utf-8")
     public @ResponseBody
-    boolean eliminar(@RequestBody Vehiculo vehiculo) {
-        return vehiculoService.eliminar(vehiculo);
+    ResponseEntity eliminar(@RequestHeader("Authorization") String auth, @RequestBody Vehiculo vehiculo) {
+        ResponseEntity responseEntity = null;
+        Entry<String, String> entryResponse;
+
+        responseEntity = validarUsuario(auth);
+        if (responseEntity != null) {
+            return responseEntity;
+        }
+        responseEntity = new ResponseEntity();
+
+        boolean transaccionOK = vehiculoService.eliminar(vehiculo);
+
+        if (transaccionOK) {
+            entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_200);
+            responseEntity.setRespuestaHttp(entryResponse);
+        } else {
+            entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_5052);
+            responseEntity.setRespuestaHttp(entryResponse);
+        }
+
+        return responseEntity;
     }
 
 }

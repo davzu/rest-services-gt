@@ -20,6 +20,7 @@ public class CodigosHttpConstantes {
     public static final String HTTP_COD_504 = "http.code.504";
     public static final String HTTP_COD_5050 = "http.code.5050";
     public static final String HTTP_COD_5051 = "http.code.5051";
+    public static final String HTTP_COD_5052 = "http.code.5052";
 
     public static final String HTTP_COD_0100 = "cus.code.0100";
     public static final String HTTP_COD_0101 = "cus.code.0101";
