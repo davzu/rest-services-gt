@@ -1,7 +1,9 @@
 package pe.edu.galaxy.training.ws.rest.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pe.edu.galaxy.training.ws.rest.bean.ResponseEntity;
-import pe.edu.galaxy.training.ws.rest.entity.Usuario;
+import pe.edu.galaxy.training.ws.rest.bean.VehiculoBean;
 import pe.edu.galaxy.training.ws.rest.entity.Vehiculo;
 import pe.edu.galaxy.training.ws.rest.service.inf.VehiculoService;
 import static pe.edu.galaxy.training.ws.rest.sid.CodigosHttpConstantes.*;
 import pe.edu.galaxy.training.ws.rest.sid.SidSingleton;
-import pe.edu.galaxy.training.ws.rest.util.Authorization;
+import pe.edu.galaxy.training.ws.rest.util.ValidadorVehiculo;
 
 @RequestMapping("/vehiculoService/v1")
 @Controller
@@ -33,16 +35,24 @@ public class VehiculoController extends SeguridadRest {
     ResponseEntity listarPorPlaca(@RequestHeader("Authorization") String auth, @PathVariable("placa") String placa) {
         ResponseEntity responseEntity = null;
         Entry<String, String> entryResponse;
+        VehiculoBean vehiculoBean = null;
 
-        responseEntity = validarUsuario(auth);
-        if (responseEntity != null) {
-            return responseEntity;
+        try {
+            responseEntity = validarUsuario(auth);
+            if (responseEntity != null) {
+                return responseEntity;
+            }
+            responseEntity = new ResponseEntity();
+
+            vehiculoBean = getVehiculoBeanFromVehiculo(vehiculoService.listarPorPlaca(placa));
+            responseEntity.setData(vehiculoBean);
+            entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_200);
+            responseEntity.setRespuestaHttp(entryResponse);
+        } catch (Exception e) {
+            responseEntity = new ResponseEntity();
+            entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_500);
+            responseEntity.setRespuestaHttp(entryResponse);
         }
-        responseEntity = new ResponseEntity();
-
-        responseEntity.setData(vehiculoService.listarPorPlaca(placa));
-        entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_200);
-        responseEntity.setRespuestaHttp(entryResponse);
 
         return responseEntity;
     }
@@ -52,39 +62,63 @@ public class VehiculoController extends SeguridadRest {
     ResponseEntity listarPorAno(@RequestHeader("Authorization") String auth, @RequestParam("ano") int ano) {
         ResponseEntity responseEntity = null;
         Entry<String, String> entryResponse;
+        List<VehiculoBean> lstVehiculoBean = null;
 
-        responseEntity = validarUsuario(auth);
-        if (responseEntity != null) {
-            return responseEntity;
+        try {
+            responseEntity = validarUsuario(auth);
+            if (responseEntity != null) {
+                return responseEntity;
+            }
+            responseEntity = new ResponseEntity();
+
+            lstVehiculoBean = getVehiculosBeanFromVehiculos(vehiculoService.listarPorAno(ano));
+            responseEntity.setData(lstVehiculoBean);
+            entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_200);
+            responseEntity.setRespuestaHttp(entryResponse);
+        } catch (Exception e) {
+            responseEntity = new ResponseEntity();
+            entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_500);
+            responseEntity.setRespuestaHttp(entryResponse);
         }
-        responseEntity = new ResponseEntity();
-
-        responseEntity.setData(vehiculoService.listarPorAno(ano));
-        entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_200);
-        responseEntity.setRespuestaHttp(entryResponse);
 
         return responseEntity;
     }
 
     @RequestMapping(value = "/insertar", method = RequestMethod.POST, produces = "application/json; charset=utf-8", consumes = "application/json; charset=utf-8")
     public @ResponseBody
-    ResponseEntity insertar(@RequestHeader("Authorization") String auth, @RequestBody Vehiculo vehiculo) {
+    ResponseEntity insertar(@RequestHeader("Authorization") String auth, @RequestBody VehiculoBean vehiculoBean) {
         ResponseEntity responseEntity = null;
         Entry<String, String> entryResponse;
+        Vehiculo vehiculo = null;
 
-        responseEntity = validarUsuario(auth);
-        if (responseEntity != null) {
-            return responseEntity;
-        }
-        responseEntity = new ResponseEntity();
+        try {
+            responseEntity = validarUsuario(auth);
+            if (responseEntity != null) {
+                return responseEntity;
+            }
+            responseEntity = new ResponseEntity();
+            vehiculo = getVehiculoFromVehiculoBean(vehiculoBean);
 
-        boolean transaccionOK = vehiculoService.insertar(vehiculo);
+            if (vehiculoService.existePlaca(vehiculo)) {
+                entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_0102);
+                responseEntity.setRespuestaHttp(entryResponse);
+            } else if (!ValidadorVehiculo.formatoPlacaValido(vehiculo.getPlaca())) {
+                entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_0101);
+                responseEntity.setRespuestaHttp(entryResponse);
+            } else {
+                boolean transaccionOK = vehiculoService.insertar(vehiculo);
 
-        if (transaccionOK) {
-            entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_200);
-            responseEntity.setRespuestaHttp(entryResponse);
-        } else {
-            entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_5050);
+                if (transaccionOK) {
+                    entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_200);
+                    responseEntity.setRespuestaHttp(entryResponse);
+                } else {
+                    entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_5050);
+                    responseEntity.setRespuestaHttp(entryResponse);
+                }
+            }
+        } catch (Exception e) {
+            responseEntity = new ResponseEntity();
+            entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_500);
             responseEntity.setRespuestaHttp(entryResponse);
         }
 
@@ -93,23 +127,39 @@ public class VehiculoController extends SeguridadRest {
 
     @RequestMapping(value = "/actualizar", method = RequestMethod.PUT, produces = "application/json; charset=utf-8", consumes = "application/json; charset=utf-8")
     public @ResponseBody
-    ResponseEntity actualizar(@RequestHeader("Authorization") String auth, @RequestBody Vehiculo vehiculo) {
+    ResponseEntity actualizar(@RequestHeader("Authorization") String auth, @RequestBody VehiculoBean vehiculoBean) {
         ResponseEntity responseEntity = null;
         Entry<String, String> entryResponse;
+        Vehiculo vehiculo = null;
 
-        responseEntity = validarUsuario(auth);
-        if (responseEntity != null) {
-            return responseEntity;
-        }
-        responseEntity = new ResponseEntity();
+        try {
+            responseEntity = validarUsuario(auth);
+            if (responseEntity != null) {
+                return responseEntity;
+            }
+            responseEntity = new ResponseEntity();
+            vehiculo = getVehiculoFromVehiculoBean(vehiculoBean);
 
-        boolean transaccionOK = vehiculoService.actualizar(vehiculo);
+            if (vehiculoService.existePlaca(vehiculo)) {
+                entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_0102);
+                responseEntity.setRespuestaHttp(entryResponse);
+            } else if (!ValidadorVehiculo.formatoPlacaValido(vehiculo.getPlaca())) {
+                entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_0101);
+                responseEntity.setRespuestaHttp(entryResponse);
+            } else {
+                boolean transaccionOK = vehiculoService.actualizar(vehiculo);
 
-        if (transaccionOK) {
-            entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_200);
-            responseEntity.setRespuestaHttp(entryResponse);
-        } else {
-            entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_5051);
+                if (transaccionOK) {
+                    entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_200);
+                    responseEntity.setRespuestaHttp(entryResponse);
+                } else {
+                    entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_5051);
+                    responseEntity.setRespuestaHttp(entryResponse);
+                }
+            }
+        } catch (Exception e) {
+            responseEntity = new ResponseEntity();
+            entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_500);
             responseEntity.setRespuestaHttp(entryResponse);
         }
 
@@ -118,27 +168,59 @@ public class VehiculoController extends SeguridadRest {
 
     @RequestMapping(value = "/eliminar", method = RequestMethod.DELETE, produces = "application/json; charset=utf-8", consumes = "application/json; charset=utf-8")
     public @ResponseBody
-    ResponseEntity eliminar(@RequestHeader("Authorization") String auth, @RequestBody Vehiculo vehiculo) {
+    ResponseEntity eliminar(@RequestHeader("Authorization") String auth, @RequestBody VehiculoBean vehiculoBean) {
         ResponseEntity responseEntity = null;
         Entry<String, String> entryResponse;
+        Vehiculo vehiculo = null;
 
-        responseEntity = validarUsuario(auth);
-        if (responseEntity != null) {
-            return responseEntity;
-        }
-        responseEntity = new ResponseEntity();
+        try {
+            responseEntity = validarUsuario(auth);
+            if (responseEntity != null) {
+                return responseEntity;
+            }
+            responseEntity = new ResponseEntity();
+            vehiculo = getVehiculoFromVehiculoBean(vehiculoBean);
 
-        boolean transaccionOK = vehiculoService.eliminar(vehiculo);
+            boolean transaccionOK = vehiculoService.eliminar(vehiculo);
 
-        if (transaccionOK) {
-            entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_200);
-            responseEntity.setRespuestaHttp(entryResponse);
-        } else {
-            entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_5052);
+            if (transaccionOK) {
+                entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_200);
+                responseEntity.setRespuestaHttp(entryResponse);
+            } else {
+                entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_5052);
+                responseEntity.setRespuestaHttp(entryResponse);
+            }
+        } catch (Exception e) {
+            responseEntity = new ResponseEntity();
+            entryResponse = sidSingleton.getEntryRespuestaHttp(HTTP_COD_500);
             responseEntity.setRespuestaHttp(entryResponse);
         }
 
         return responseEntity;
+    }
+
+    private List<VehiculoBean> getVehiculosBeanFromVehiculos(List<Vehiculo> lstVehiculo) throws Exception {
+        List<VehiculoBean> lstVehiculoBean = new ArrayList<VehiculoBean>();
+        for (Vehiculo vehiculo : lstVehiculo) {
+            VehiculoBean vehiculoBean = new VehiculoBean();
+            BeanUtils.copyProperties(vehiculoBean, vehiculo);
+            lstVehiculoBean.add(vehiculoBean);
+        }
+        return lstVehiculoBean;
+    }
+
+    private VehiculoBean getVehiculoBeanFromVehiculo(Vehiculo vehiculo) throws Exception {
+        VehiculoBean vehiculoBean = new VehiculoBean();
+        BeanUtils.copyProperties(vehiculoBean, vehiculo);
+
+        return vehiculoBean;
+    }
+
+    private Vehiculo getVehiculoFromVehiculoBean(VehiculoBean vehiculoBean) throws Exception {
+        Vehiculo vehiculo = new Vehiculo();
+        BeanUtils.copyProperties(vehiculo, vehiculoBean);
+
+        return vehiculo;
     }
 
 }

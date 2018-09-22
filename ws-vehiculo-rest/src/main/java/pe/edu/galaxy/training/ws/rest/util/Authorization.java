@@ -1,6 +1,7 @@
 package pe.edu.galaxy.training.ws.rest.util;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
 import pe.edu.galaxy.training.ws.rest.entity.Usuario;
 
 public class Authorization {
@@ -18,9 +19,7 @@ public class Authorization {
             System.out.println(decode);
             String strUsuario = decode.substring(0, decode.indexOf(':'));
             String strClave = decode.substring(decode.indexOf(':') + 1);
-            System.out.println("usuario: " + strUsuario);
-            System.out.println("clave: " + strClave);
-
+            strClave = getStringAsMD5(strClave);
             usuario = new Usuario();
             usuario.setId(strUsuario);
             usuario.setClave(strClave);
@@ -30,6 +29,11 @@ public class Authorization {
         }
 
         return usuario;
+    }
+
+    private static String getStringAsMD5(String texto) {
+        String textoMD5 = DigestUtils.md5Hex(texto);
+        return textoMD5;
     }
 
 }

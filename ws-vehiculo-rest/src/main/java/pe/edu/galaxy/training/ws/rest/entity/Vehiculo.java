@@ -35,6 +35,8 @@ import javax.persistence.StoredProcedureParameter;
                     parameters = {
                         @StoredProcedureParameter(mode = ParameterMode.OUT, name = "P_CODIGO", type = Integer.class),
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "P_PLACA", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "P_MARCA", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "P_MODELO", type = String.class),
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "P_ANO", type = Integer.class)
                     }
             ),
@@ -44,6 +46,8 @@ import javax.persistence.StoredProcedureParameter;
                     parameters = {
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "P_CODIGO", type = Integer.class),
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "P_PLACA", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "P_MARCA", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "P_MODELO", type = String.class),
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "P_ANO", type = Integer.class)
                     }
             ),
@@ -52,6 +56,15 @@ import javax.persistence.StoredProcedureParameter;
                     procedureName = "PKG_VEHICULO.SP_ELIMINAR",
                     parameters = {
                         @StoredProcedureParameter(mode = ParameterMode.IN, name = "P_CODIGO", type = Integer.class)
+                    }
+            ),
+            @NamedStoredProcedureQuery(
+                    name = "vehiculo.validar.placa",
+                    procedureName = "PKG_VEHICULO.SP_VALIDAR_PLACA",
+                    parameters = {
+                        @StoredProcedureParameter(mode = ParameterMode.OUT, name = "P_NUM", type = Integer.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "P_CODIGO", type = Integer.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "P_PLACA", type = String.class)
                     }
             )
         }
@@ -65,6 +78,10 @@ public class Vehiculo implements Serializable {
     private long codigo;
     @Column(name = "PLACA")
     private String placa;
+    @Column(name = "MARCA")
+    private String marca;
+    @Column(name = "MODELO")
+    private String modelo;
     @Column(name = "ANO")
     private int ano;
     @Column(name = "ESTADO")
@@ -84,6 +101,22 @@ public class Vehiculo implements Serializable {
 
     public void setPlaca(String placa) {
         this.placa = placa;
+    }
+
+    public String getMarca() {
+        return marca;
+    }
+
+    public void setMarca(String marca) {
+        this.marca = marca;
+    }
+
+    public String getModelo() {
+        return modelo;
+    }
+
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
     }
 
     public int getAno() {

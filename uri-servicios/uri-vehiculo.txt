@@ -1,0 +1,9 @@
+http://localhost:8085/WSVehiculoRest/vehiculoService/v1/listarPorPlaca/A1A-124
+http://localhost:8085/WSVehiculoRest/vehiculoService/v1/listarPorAno?ano=2001
+http://localhost:8085/WSVehiculoRest/vehiculoService/v1/insertar
+http://localhost:8085/WSVehiculoRest/vehiculoService/v1/actualizar
+http://localhost:8085/WSVehiculoRest/vehiculoService/v1/eliminar
+
+Basic Auth
+usuario: cgomez
+clave: abcde12345
